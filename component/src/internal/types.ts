@@ -1,6 +1,3 @@
-
-type KeyOfValue<T, V> = {
+export type KeyOfValue<T, V> = {
   [K in keyof T]: T[K] extends V ? K : never;
 }[keyof T];
-
-export type ClassNameOf<T> = KeyOfValue<Objects, T>

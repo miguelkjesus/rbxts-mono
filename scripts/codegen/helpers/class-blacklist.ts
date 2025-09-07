@@ -1,4 +1,6 @@
-export const CLASS_BLACKLIST = new Set([
+import { ApiClass } from "./api-dump";
+
+const CLASS_BLACKLIST = new Set([
 	"UserSettings",
 	"DebugSettings",
 	"Studio",
@@ -159,4 +161,11 @@ export const CLASS_BLACKLIST = new Set([
   "SlimContentProvider",
   "AppRatingPromptService",
   "ExecutedRemoteCommand",
+	"AudioTremolo"
 ]);
+
+function isClassAllowed({ Name }: ApiClass) {
+	return !CLASS_BLACKLIST.has(Name)
+}
+
+export default isClassAllowed

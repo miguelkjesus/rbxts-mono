@@ -1,4 +1,4 @@
-export async function getApiDump(): Promise<ApiDump> {
+async function getApiDump(): Promise<ApiDump> {
   return (await fetch(
     "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/Mini-API-Dump.json"
   )).json()
@@ -148,3 +148,5 @@ export interface ApiDump {
 	Enums: Array<ApiEnum>;
 	Version: number;
 }
+
+export default getApiDump
