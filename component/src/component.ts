@@ -1,4 +1,4 @@
-import { Maid } from "maid";
+import { Cleaner } from "cleaner";
 
 export abstract class Component {
   readonly Instance: RBXObject;
@@ -6,7 +6,7 @@ export abstract class Component {
   private readonly DestroyingEvent: BindableEvent<() => void> = new Instance("BindableEvent")
   readonly Destroying = this.DestroyingEvent.Event
 
-  readonly Maid = new Maid()
+  readonly DestroyTasks = new Cleaner()
 
   constructor(instance: RBXObject) {
     this.Instance = instance;
@@ -14,7 +14,7 @@ export abstract class Component {
     this.OnStart?.();
 
     if (this.Instance.IsA("Instance")) {
-      this.Maid.Add(this.Instance.Destroying.Connect(() => this.Destroy()))
+      this.DestroyTasks.Add(this.Instance.Destroying.Connect(() => this.Destroy()))
     }
   }
 
@@ -25,7 +25,7 @@ export abstract class Component {
   Destroy() {
     this.OnDestroying?.();
     this.DestroyingEvent.Fire()
-    this.Maid.Clean();
+    this.DestroyTasks.CleanAll();
   }
   
   protected OnStart?(): void;
