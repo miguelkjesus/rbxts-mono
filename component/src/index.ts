@@ -5,4 +5,4 @@ export * from "types";
 export * from "component-service";
 export * from "component";
 
-export * from "on";
+export * from "hooks";
