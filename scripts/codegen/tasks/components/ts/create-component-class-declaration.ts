@@ -1,6 +1,6 @@
 import ts, { factory } from "typescript"
 
-import { ApiClass, ApiEvent } from "../../../helpers/api-dump";
+import { ApiClass } from "../../../helpers/api-dump";
 import { getSafeClassName } from "../../../helpers/ts/alias";
 
 import createHookInitializer from "./create-hook-initializer";
@@ -19,7 +19,10 @@ function createComponentClass(Class: ApiClass) {
   const Events = getEvents(Class)
 
   return factory.createClassDeclaration(
-    [factory.createToken(ts.SyntaxKind.ExportKeyword)],
+    [
+      factory.createToken(ts.SyntaxKind.ExportKeyword),
+      factory.createToken(ts.SyntaxKind.AbstractKeyword)
+    ],
     factory.createIdentifier(componentName),
     undefined,
     [createExtendsComponent(Superclass)],

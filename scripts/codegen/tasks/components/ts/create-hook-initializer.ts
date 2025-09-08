@@ -14,7 +14,7 @@ function createHookInitializer({ Name }: ApiEvent) {
       factory.createThis()
     ),
     factory.createBlock(
-      [createMaidAdd(factory.createCallExpression(
+      [createRemoveTask(factory.createCallExpression(
         factory.createPropertyAccessExpression(
           factory.createPropertyAccessExpression(
             factory.createPropertyAccessExpression(
@@ -34,17 +34,26 @@ function createHookInitializer({ Name }: ApiEvent) {
   )
 }
 
-function createMaidAdd(value: ts.Expression) {
+function createRemoveTask(value: ts.Expression) {
   return factory.createExpressionStatement(factory.createCallExpression(
     factory.createPropertyAccessExpression(
         factory.createPropertyAccessExpression(
           factory.createThis(),
-          factory.createIdentifier("Maid")
+          factory.createIdentifier("DestroyTasks")
         ),
         factory.createIdentifier("Add")
       ),
       undefined,
-      [value]
+      [
+        value,
+        factory.createObjectLiteralExpression(
+          [factory.createPropertyAssignment(
+            factory.createIdentifier("removable"),
+            factory.createFalse()
+          )],
+          false
+        )
+      ]
     ))
 }
 
