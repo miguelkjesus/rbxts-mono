@@ -1,3 +1,6 @@
-import components from "./tasks/components";
+import runTasks from './helpers/run-tasks'
 
-components()
+import generateComponents from './tasks/generate-components'
+import eslint from './tasks/eslint'
+
+void runTasks({ generateComponents }, { eslint })

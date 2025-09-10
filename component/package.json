@@ -7,7 +7,7 @@
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
     "prepublishOnly": "npm run build",
-    "codegen": "ts-node ../scripts/codegen/index.ts"
+    "codegen": "tsx ../scripts/codegen"
   },
   "keywords": [],
   "author": "",
@@ -22,17 +22,18 @@
     "access": "public"
   },
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
     "@rbxts/compiler-types": "^3.0.0-types.0",
     "@rbxts/types": "^1.0.868",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
-    "eslint": "^9.33.0",
+    "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-roblox-ts": "^1.1.0",
     "prettier": "^3.6.2",
     "roblox-ts": "^3.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "tsx": "^4.20.5",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.42.0"
   }
 }

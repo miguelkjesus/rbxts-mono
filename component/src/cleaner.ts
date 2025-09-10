@@ -1,4 +1,3 @@
-
 export type Cleanable =
   | (() => void)
   | thread
@@ -8,12 +7,12 @@ export type Cleanable =
   | undefined
 
 export interface Task {
-  item: Cleanable;
-  removable: boolean;
+  item: Cleanable
+  removable: boolean
 }
 
-export type CleanerAddOptions = {
-  removable?: boolean;
+export interface CleanerAddOptions {
+  removable?: boolean
 }
 
 export class Cleaner {
@@ -37,7 +36,7 @@ export class Cleaner {
 
   TryRemove(item: Cleanable) {
     if (item === undefined) return
-    
+
     if (this.IsRemovable(item) ?? true) {
       this.Tasks.delete(item)
       return true
@@ -49,24 +48,23 @@ export class Cleaner {
   Clean(item: Cleanable) {
     if (item === undefined) return
 
-    if (typeIs(item, "function")) {
+    if (typeIs(item, 'function')) {
       item()
-    } else if (typeIs(item, "thread")) {
-      const cancelled = coroutine.running() === item
-        ? false
-        : pcall(() => task.cancel(item))[0]
+    } else if (typeIs(item, 'thread')) {
+      const cancelled =
+        coroutine.running() === item ? false : pcall(() => task.cancel(item))[0]
 
       if (!cancelled) {
         task.defer(() => task.cancel(item))
       }
-    } else if (typeIs(item, "RBXScriptConnection")) {
+    } else if (typeIs(item, 'RBXScriptConnection')) {
       item.Disconnect()
     } else if (item instanceof Cleaner) {
       item.CleanAll()
-    } else if ("Destroy" in item) {
+    } else if ('Destroy' in item) {
       item.Destroy()
     } else if (item !== undefined) {
-      error("Cannot clean this item")
+      error('Cannot clean this item')
     }
 
     this.Tasks.delete(item)

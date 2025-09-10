@@ -15,6 +15,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"moduleDetection": "force",
 		"strict": true,
+    "noUncheckedIndexedAccess": true,
 		"target": "ESNext",
 		"typeRoots": ["node_modules/@rbxts"],
 

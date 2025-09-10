@@ -1,42 +1,48 @@
-import { Cleaner } from "cleaner";
+import { Cleaner } from 'cleaner'
 
 export abstract class Component {
-  readonly Instance: RBXObject;
+  readonly Instance: RBXObject
 
-  private readonly DestroyingEvent: BindableEvent<() => void> = new Instance("BindableEvent")
+  private readonly DestroyingEvent: BindableEvent<() => void> = new Instance(
+    'BindableEvent'
+  )
   readonly Destroying = this.DestroyingEvent.Event
 
   readonly DestroyTasks = new Cleaner()
 
   constructor(instance: RBXObject) {
-    this.Instance = instance;
+    this.Instance = instance
 
-    this.OnStart?.();
+    this.OnStart?.()
 
-    if (this.Instance.IsA("Instance")) {
-      this.DestroyTasks.Add(this.Instance.Destroying.Connect(() => this.Destroy()))
+    if (this.Instance.IsA('Instance')) {
+      this.DestroyTasks.Add(
+        this.Instance.Destroying.Connect(() => this.Destroy())
+      )
     }
   }
 
   static IsClass(instance: RBXObject): instance is RBXObject {
-    return instance.IsA("Object")
+    return instance.IsA('Object')
   }
 
   Destroy() {
-    this.OnDestroying?.();
+    this.OnDestroying?.()
     this.DestroyingEvent.Fire()
-    this.DestroyTasks.CleanAll();
+    this.DestroyTasks.CleanAll()
   }
-  
-  protected OnStart?(): void;
-  protected OnDestroying?(): void;
+
+  protected OnStart?(): void
+  protected OnDestroying?(): void
 }
 
-export type ComponentInstance<T> = T extends Component ? T["Instance"] : never
+export type ComponentInstance<T> = T extends Component ? T['Instance'] : never
 
 export class NonAbstractComponent extends Component {
   constructor(instance: RBXObject) {
     super(instance)
-    error("Do not inherit from or create this class. Please use Component instead.")
+    error(
+      'Do not inherit from or create this class. Please use Component instead.'
+    )
   }
 }

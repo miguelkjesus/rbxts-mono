@@ -1,4 +1,4 @@
-import { KeyOfValue } from "internal/types"
+import { KeyOfValue } from 'internal/types'
 
 export type ClassNameOf<T> = KeyOfValue<Objects, T>
 
@@ -8,4 +8,5 @@ export type MethodDecorator<Fn extends Callback> = (
   descriptor: TypedPropertyDescriptor<Fn>
 ) => TypedPropertyDescriptor<Fn>
 
-export type SignalParameters<T> = T extends RBXScriptSignal<infer Fn> ? Parameters<Fn> : never
+export type SignalParameters<T> =
+  T extends RBXScriptSignal<infer Fn> ? Parameters<Fn> : never

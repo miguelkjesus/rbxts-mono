@@ -1,8 +1,8 @@
-import ts, { factory } from "typescript";
+import ts, { factory } from 'typescript'
 
 const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed })
 
-function generateSource(statements: readonly ts.Statement[]) {
+async function generateSource(statements: readonly ts.Statement[]) {
   return printer.printFile(
     factory.createSourceFile(
       statements,

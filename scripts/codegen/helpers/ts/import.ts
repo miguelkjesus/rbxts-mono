@@ -1,4 +1,4 @@
-import { factory } from "typescript";
+import { factory } from 'typescript'
 
 function importDependencies(dependencies: string[], from: string) {
   return factory.createImportDeclaration(
@@ -7,11 +7,13 @@ function importDependencies(dependencies: string[], from: string) {
       undefined,
       undefined,
       factory.createNamedImports(
-        dependencies.map((name) => factory.createImportSpecifier(
-          false,
-          undefined,
-          factory.createIdentifier(name)
-        ))
+        dependencies.map((name) =>
+          factory.createImportSpecifier(
+            false,
+            undefined,
+            factory.createIdentifier(name)
+          )
+        )
       )
     ),
     factory.createStringLiteral(from),
