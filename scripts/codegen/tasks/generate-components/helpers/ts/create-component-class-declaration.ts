@@ -1,52 +1,77 @@
 import ts, { factory } from 'typescript'
 
-import { ApiClass } from '../api-dump'
-import { getSafeClassName } from '../../../../helpers/ts/alias'
+import setJsDocComment from '../../../../helpers/ts/set-jsdoc'
 
-import createHookInitializer from './create-hook-initializer'
-import createHookMethod from './create-hook-method'
-import getEvents from '../get-events'
-import setExpectError from '../../../../helpers/ts/set-expect-error'
+import CodegenComponent, { TypeParameter } from '../context/component'
 
-const ERRONEOUS_TYPE_NAMES = new Set(['Camera', 'DataModel'])
+import createEventMethodInitializer from './create-event-method-initializer'
+import createEventMethod from './create-event-method'
 
-function createComponentClass(Class: ApiClass) {
-  const { Name, Superclass } = Class
-
-  const typeName = getSafeClassName(Name)
-  const componentName = `${typeName}Component`
-
-  const Events = getEvents(Class)
-
-  return factory.createClassDeclaration(
+function createComponentClass({
+  ComponentName,
+  ClassType,
+  StaticClassType,
+  TypeParameters,
+  SuperClassComponentName,
+  SuperClassTypeArguments,
+  ClassName,
+  Events,
+  Documentation,
+}: CodegenComponent) {
+  const cls = factory.createClassDeclaration(
     [
       factory.createToken(ts.SyntaxKind.ExportKeyword),
       factory.createToken(ts.SyntaxKind.AbstractKeyword),
     ],
-    factory.createIdentifier(componentName),
-    undefined,
-    [createExtendsComponent(Superclass)],
+    factory.createIdentifier(ComponentName),
+    createTypeParameters(TypeParameters),
+    [createExtends(SuperClassComponentName, SuperClassTypeArguments)],
     [
-      declareInstanceProperty(typeName),
-      createIsClassMethod(Name, typeName),
-      createConstructor(typeName, [...Events.map(createHookInitializer)]),
-      ...Events.map((Event) => createHookMethod(typeName, Event)),
+      declareInstanceProperty(ClassType),
+      createIsClassMethod(ClassName, StaticClassType),
+      createConstructor(ClassType, [
+        ...Events.map(createEventMethodInitializer),
+      ]),
+      ...Events.map(createEventMethod),
     ]
+  )
+
+  setJsDocComment(cls, [Documentation])
+
+  return cls
+}
+
+function createTypeParameters(params?: readonly TypeParameter[]) {
+  if (!params || params.length === 0) return undefined
+
+  return params.map((param) =>
+    factory.createTypeParameterDeclaration(
+      undefined,
+      factory.createIdentifier(param.Name),
+      undefined,
+      param.Default
+    )
   )
 }
 
-function createExtendsComponent(className: string) {
-  const typeName = className === '<<<ROOT>>>' ? '' : getSafeClassName(className)
-
+function createExtends(name: string, params?: readonly string[]) {
   return factory.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, [
     factory.createExpressionWithTypeArguments(
-      factory.createIdentifier(`${typeName}Component`),
-      undefined
+      factory.createIdentifier(name),
+      createSuperClassTypeArguments(params)
     ),
   ])
 }
 
-function createIsClassMethod(className: string, typeName: string) {
+function createSuperClassTypeArguments(params?: readonly string[]) {
+  if (!params || params.length === 0) return undefined
+
+  return params.map((param) =>
+    factory.createTypeReferenceNode(factory.createIdentifier(param), undefined)
+  )
+}
+
+function createIsClassMethod(className: string, type: ts.TypeNode) {
   return factory.createMethodDeclaration(
     [factory.createToken(ts.SyntaxKind.StaticKeyword)],
     undefined,
@@ -69,10 +94,7 @@ function createIsClassMethod(className: string, typeName: string) {
     factory.createTypePredicateNode(
       undefined,
       factory.createIdentifier('instance'),
-      factory.createTypeReferenceNode(
-        factory.createIdentifier(typeName),
-        undefined
-      )
+      type
     ),
     factory.createBlock(
       [
@@ -92,29 +114,20 @@ function createIsClassMethod(className: string, typeName: string) {
   )
 }
 
-function declareInstanceProperty(typeName: string) {
-  const statement = factory.createPropertyDeclaration(
+function declareInstanceProperty(type: ts.TypeNode) {
+  return factory.createPropertyDeclaration(
     [
       factory.createToken(ts.SyntaxKind.DeclareKeyword),
       factory.createToken(ts.SyntaxKind.ReadonlyKeyword),
     ],
     factory.createIdentifier('Instance'),
     undefined,
-    factory.createTypeReferenceNode(
-      factory.createIdentifier(typeName),
-      undefined
-    ),
+    type,
     undefined
   )
-
-  if (ERRONEOUS_TYPE_NAMES.has(typeName)) {
-    setExpectError(statement, 'roblox inheritance issue')
-  }
-
-  return statement
 }
 
-function createConstructor(typeName: string, body: readonly ts.Statement[]) {
+function createConstructor(type: ts.TypeNode, body: readonly ts.Statement[]) {
   return factory.createConstructorDeclaration(
     undefined,
     [
@@ -123,29 +136,18 @@ function createConstructor(typeName: string, body: readonly ts.Statement[]) {
         undefined,
         factory.createIdentifier('instance'),
         undefined,
-        factory.createTypeReferenceNode(
-          factory.createIdentifier(typeName),
-          undefined
-        ),
+        type,
         undefined
       ),
     ],
-    factory.createBlock([createSuper(typeName), ...body], true)
+    factory.createBlock([superCall, ...body], true)
   )
 }
 
-function createSuper(typeName: string) {
-  const statement = factory.createExpressionStatement(
-    factory.createCallExpression(factory.createSuper(), undefined, [
-      factory.createIdentifier('instance'),
-    ])
-  )
-
-  if (ERRONEOUS_TYPE_NAMES.has(typeName)) {
-    setExpectError(statement, 'roblox inheritance issue')
-  }
-
-  return statement
-}
+const superCall = factory.createExpressionStatement(
+  factory.createCallExpression(factory.createSuper(), undefined, [
+    factory.createIdentifier('instance'),
+  ])
+)
 
 export default createComponentClass

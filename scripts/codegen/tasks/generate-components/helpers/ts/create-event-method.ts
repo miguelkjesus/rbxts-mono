@@ -1,28 +1,31 @@
 import ts, { factory } from 'typescript'
 
-import { ApiEvent } from '../api-dump'
-import {
-  getSafeHookName,
-  getSafeParameterName,
-} from '../../../../helpers/ts/alias'
+import setJsDocComment from '../../../../helpers/ts/set-jsdoc'
+import CodegenEvent from '../context/event'
 
-function createHookMethod(typeName: string, { Name }: ApiEvent) {
-  const eventName = getSafeParameterName(Name)
-  const hookName = getSafeHookName(Name)
-
-  return factory.createMethodDeclaration(
+function createEventMethod({
+  MethodName,
+  EventName,
+  Component,
+  Documentation,
+}: CodegenEvent) {
+  const method = factory.createMethodDeclaration(
     [factory.createToken(ts.SyntaxKind.ProtectedKeyword)],
     undefined,
-    factory.createIdentifier(hookName),
+    factory.createIdentifier(MethodName),
     factory.createToken(ts.SyntaxKind.QuestionToken),
     undefined,
-    createEventParameters(typeName, eventName),
+    createEventParameters(Component.ClassType, EventName),
     factory.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword),
     undefined
   )
+
+  setJsDocComment(method, [Documentation])
+
+  return method
 }
 
-function createEventParameters(typeName: string, eventName: string) {
+function createEventParameters(type: ts.TypeNode, eventName: string) {
   return [
     factory.createParameterDeclaration(
       undefined,
@@ -33,10 +36,7 @@ function createEventParameters(typeName: string, eventName: string) {
         factory.createIdentifier('SignalParameters'),
         [
           factory.createIndexedAccessTypeNode(
-            factory.createTypeReferenceNode(
-              factory.createIdentifier(typeName),
-              undefined
-            ),
+            type,
             factory.createLiteralTypeNode(
               factory.createStringLiteral(eventName)
             )
@@ -48,4 +48,4 @@ function createEventParameters(typeName: string, eventName: string) {
   ]
 }
 
-export default createHookMethod
+export default createEventMethod

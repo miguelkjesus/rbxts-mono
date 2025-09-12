@@ -1,3 +1,5 @@
+// type defs from https://github.com/roblox-ts/types/blob/master/src/types/ApiDump.d.ts
+
 async function getApiDump(): Promise<ApiDump> {
   return (
     await fetch(

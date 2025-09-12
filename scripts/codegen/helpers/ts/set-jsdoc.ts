@@ -1,16 +1,28 @@
 import ts from 'typescript'
 
-export function setJsDocComment(node: ts.Node, comment: string) {
-  let lines = comment.split('\n')
+type StringLike = { toString(): string }
 
-  while (lines.at(-1)?.trim() === '') lines.pop()
+export default function setJsDocComment(
+  node: ts.Node,
+  lines: (StringLike | undefined)[]
+) {
+  let strings = lines
+    .filter((line) => line !== undefined)
+    .map((line) => line.toString())
+    .join('\n')
+    .trim()
+    .split('\n')
 
-  lines = lines.map((v) => ` * ${v}`)
+  while (strings.at(-1)?.trim() === '') strings.pop()
 
-  lines.unshift('*')
-  lines.push(' ')
+  if (strings.length === 0) return
 
-  const text = lines.join('\n')
+  strings = strings.map((v) => ` * ${v}`)
+
+  strings.unshift('*')
+  strings.push(' ')
+
+  const text = strings.join('\n')
 
   ts.setSyntheticLeadingComments(node, [
     {

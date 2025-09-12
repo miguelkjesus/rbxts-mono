@@ -1,11 +1,14 @@
-import getApiDump from './helpers/api-dump'
-import generateComponentsSource from './helpers/ts/generate-components-source'
 import { write } from '../../helpers/files'
 
-async function generateComponents() {
-  const { Classes } = await getApiDump()
+import RobloxData from './helpers/roblox-data'
+import CodegenContext from './helpers/context'
+import generateComponentsSource from './helpers/ts/generate-components-source'
 
-  write('generated/components.ts', await generateComponentsSource(Classes))
+async function generateComponents() {
+  const context = new CodegenContext(await RobloxData.fetch())
+  write('generated/components.ts', await generateComponentsSource(context))
 }
+
+// TODO add service provider generic: DataModelComponent extends ServiceProviderComponent<Services>
 
 export default generateComponents

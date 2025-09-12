@@ -1,15 +1,12 @@
 import ts, { factory } from 'typescript'
 
-import { ApiEvent } from '../api-dump'
 import createEventMethodCallback from '../../../../helpers/ts/create-event-method-callback'
-import { getSafeHookName } from '../../../../helpers/ts/alias'
+import CodegenEvent from '../context/event'
 
-function createHookInitializer({ Name }: ApiEvent) {
-  const hookName = getSafeHookName(Name)
-
+function createEventMethodInitializer({ MethodName, EventName }: CodegenEvent) {
   return factory.createIfStatement(
     factory.createBinaryExpression(
-      factory.createStringLiteral(hookName),
+      factory.createStringLiteral(MethodName),
       factory.createToken(ts.SyntaxKind.InKeyword),
       factory.createThis()
     ),
@@ -23,12 +20,12 @@ function createHookInitializer({ Name }: ApiEvent) {
                   factory.createThis(),
                   factory.createIdentifier('Instance')
                 ),
-                factory.createIdentifier(Name)
+                factory.createIdentifier(EventName)
               ),
               factory.createIdentifier('Connect')
             ),
             undefined,
-            [createEventMethodCallback(hookName)]
+            [createEventMethodCallback(MethodName)]
           )
         ),
       ],
@@ -65,4 +62,4 @@ function createRemoveTask(value: ts.Expression) {
   )
 }
 
-export default createHookInitializer
+export default createEventMethodInitializer

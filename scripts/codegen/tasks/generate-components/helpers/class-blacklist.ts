@@ -1,3 +1,5 @@
+// modified from https://github.com/roblox-ts/types/blob/master/src/constants.ts
+
 import { ApiClass } from './api-dump'
 
 const CLASS_BLACKLIST = new Set([

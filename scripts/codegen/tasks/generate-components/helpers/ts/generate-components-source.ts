@@ -1,14 +1,15 @@
-import { ApiClass } from '../api-dump'
-import isClassAllowed from '../class-blacklist'
 import generateSource from '../../../../helpers/ts/generate-source'
 import importDependencies from '../../../../helpers/ts/import'
+
+import CodegenContext from '../context'
+
 import createComponentClass from './create-component-class-declaration'
 
-async function generateComponentsSource(Classes: ApiClass[]) {
+async function generateComponentsSource({ Classes }: CodegenContext) {
   return await generateSource([
     importDependencies(['SignalParameters'], 'types'),
     importDependencies(['Component'], 'component'),
-    ...Classes.filter(isClassAllowed).map(createComponentClass),
+    ...Classes.map(createComponentClass),
   ])
 }
 
