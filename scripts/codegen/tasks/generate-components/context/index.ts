@@ -1,5 +1,5 @@
-import isClassAllowed from '../class-blacklist'
-import RobloxData from '../roblox-data'
+import isClassAllowed from '../helpers/class-blacklist'
+import RobloxData from '../helpers/roblox-data'
 
 import CodegenComponent from './component'
 

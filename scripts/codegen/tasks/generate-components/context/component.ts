@@ -1,9 +1,9 @@
 import ts, { factory } from 'typescript'
 
-import { ApiClass, ApiEvent } from '../api-dump'
-import RobloxData from '../roblox-data'
-import transformHtml from '../transform-html'
-import isEventAllowed from '../event-blacklist'
+import { ApiClass, ApiEvent } from '../helpers/api-dump'
+import RobloxData from '../helpers/roblox-data'
+import transformHtml from '../helpers/transform-html'
+import isEventAllowed from '../helpers/event-blacklist'
 
 import CodegenEvent from './event'
 

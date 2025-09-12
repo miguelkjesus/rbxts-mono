@@ -1,7 +1,7 @@
 import ts, { factory } from 'typescript'
 
 import setJsDocComment from '../../../../helpers/ts/set-jsdoc'
-import CodegenEvent from '../context/event'
+import CodegenEvent from '../../context/event'
 
 function createEventMethod({
   MethodName,

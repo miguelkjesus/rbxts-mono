@@ -2,7 +2,7 @@ import ts, { factory } from 'typescript'
 
 import setJsDocComment from '../../../../helpers/ts/set-jsdoc'
 
-import CodegenComponent, { TypeParameter } from '../context/component'
+import CodegenComponent, { TypeParameter } from '../../context/component'
 
 import createEventMethodInitializer from './create-event-method-initializer'
 import createEventMethod from './create-event-method'

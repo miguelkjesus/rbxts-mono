@@ -1,7 +1,7 @@
 import ts, { factory } from 'typescript'
 
 import createEventMethodCallback from '../../../../helpers/ts/create-event-method-callback'
-import CodegenEvent from '../context/event'
+import CodegenEvent from '../../context/event'
 
 function createEventMethodInitializer({ MethodName, EventName }: CodegenEvent) {
   return factory.createIfStatement(

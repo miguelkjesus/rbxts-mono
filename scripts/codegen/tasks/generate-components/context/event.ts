@@ -1,6 +1,6 @@
-import { ApiEvent } from '../api-dump'
-import RobloxData from '../roblox-data'
-import transformHtml from '../transform-html'
+import { ApiEvent } from '../helpers/api-dump'
+import RobloxData from '../helpers/roblox-data'
+import transformHtml from '../helpers/transform-html'
 
 import type CodegenComponent from './component'
 

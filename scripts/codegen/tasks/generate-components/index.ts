@@ -1,7 +1,7 @@
 import { write } from '../../helpers/files'
 
 import RobloxData from './helpers/roblox-data'
-import CodegenContext from './helpers/context'
+import CodegenContext from './context'
 import generateComponentsSource from './helpers/ts/generate-components-source'
 
 async function generateComponents() {
