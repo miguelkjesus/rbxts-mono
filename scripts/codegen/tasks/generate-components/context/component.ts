@@ -1,6 +1,12 @@
 import ts, { factory } from 'typescript'
 
 import { ApiClass, ApiEvent } from '../helpers/api-dump'
+import {
+  INSTANCE_TYPE_ARGS,
+  SUPERCLASS_TYPE_ARGS,
+  TYPE_PARAMS,
+  TypeParameter,
+} from '../helpers/generics'
 import RobloxData from '../helpers/roblox-data'
 import transformHtml from '../helpers/transform-html'
 import isEventAllowed from '../helpers/event-blacklist'
@@ -10,24 +16,6 @@ import CodegenEvent from './event'
 const CLASS_ALIASES: Record<string, string> = { Object: 'RBXObject' }
 const getTypescriptName = (name: string) => CLASS_ALIASES[name] ?? name
 
-export type TypeParameter = {
-  Name: string
-  Default?: ts.TypeNode
-}
-
-const TYPE_PARAMS: Record<string, TypeParameter[]> = {
-  ServiceProvider: [
-    {
-      Name: 'S',
-      Default: factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword),
-    },
-  ],
-}
-
-const SUPERCLASS_TYPE_ARGS: Record<string, string[]> = {
-  DataModel: ['Services'],
-}
-
 export default class CodegenComponent {
   readonly ClassName: string
   readonly ComponentName: string
@@ -35,7 +23,7 @@ export default class CodegenComponent {
   readonly ClassType: ts.TypeNode
   readonly StaticClassType: ts.TypeNode
   readonly SuperClassComponentName: string
-  readonly SuperClassTypeArguments?: string[]
+  readonly SuperClassTypeArguments?: ts.TypeNode[]
   readonly Events: CodegenEvent[]
 
   readonly Documentation?: string
@@ -48,22 +36,16 @@ export default class CodegenComponent {
     // Generics
     this.TypeParameters = TYPE_PARAMS[Class.Name]
     this.SuperClassTypeArguments = SUPERCLASS_TYPE_ARGS[Class.Name]
+    const InstanceTypeArguments = INSTANCE_TYPE_ARGS[Class.Name]
 
     this.ClassType = factory.createTypeReferenceNode(
       factory.createIdentifier(TypescriptName),
-      this.TypeParameters
-        ? this.TypeParameters.map(({ Name }) =>
-            factory.createTypeReferenceNode(
-              factory.createIdentifier(Name),
-              undefined
-            )
-          )
-        : undefined
+      InstanceTypeArguments
     )
     this.StaticClassType = factory.createTypeReferenceNode(
       factory.createIdentifier(TypescriptName),
-      this.TypeParameters
-        ? this.TypeParameters.map(() =>
+      InstanceTypeArguments
+        ? InstanceTypeArguments.map(() =>
             factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword)
           )
         : undefined

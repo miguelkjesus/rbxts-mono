@@ -9,6 +9,4 @@ async function generateComponents() {
   write('generated/components.ts', await generateComponentsSource(context))
 }
 
-// TODO add service provider generic: DataModelComponent extends ServiceProviderComponent<Services>
-
 export default generateComponents

@@ -27,5 +27,5 @@
 		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
 		"declaration": true,
 	},
-	"exclude": ["out", "node_modules", "internal"]
+	"exclude": ["out", "node_modules"]
 }

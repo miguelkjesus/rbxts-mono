@@ -2,7 +2,9 @@ import ts, { factory } from 'typescript'
 
 import setJsDocComment from '../../../../helpers/ts/set-jsdoc'
 
-import CodegenComponent, { TypeParameter } from '../../context/component'
+import CodegenComponent from '../../context/component'
+
+import { TypeParameter } from '../generics'
 
 import createEventMethodInitializer from './create-event-method-initializer'
 import createEventMethod from './create-event-method'
@@ -48,27 +50,19 @@ function createTypeParameters(params?: readonly TypeParameter[]) {
     factory.createTypeParameterDeclaration(
       undefined,
       factory.createIdentifier(param.Name),
-      undefined,
+      param.Constraint,
       param.Default
     )
   )
 }
 
-function createExtends(name: string, params?: readonly string[]) {
+function createExtends(name: string, params?: readonly ts.TypeNode[]) {
   return factory.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, [
     factory.createExpressionWithTypeArguments(
       factory.createIdentifier(name),
-      createSuperClassTypeArguments(params)
+      params
     ),
   ])
-}
-
-function createSuperClassTypeArguments(params?: readonly string[]) {
-  if (!params || params.length === 0) return undefined
-
-  return params.map((param) =>
-    factory.createTypeReferenceNode(factory.createIdentifier(param), undefined)
-  )
 }
 
 function createIsClassMethod(className: string, type: ts.TypeNode) {

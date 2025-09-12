@@ -4,6 +4,7 @@ import js from '@eslint/js'
 import ts from 'typescript-eslint'
 import roblox from 'eslint-plugin-roblox-ts'
 import prettier from 'eslint-plugin-prettier/recommended'
+import stylistic from '@stylistic/eslint-plugin'
 
 export default defineConfig(
   globalIgnores([
@@ -18,6 +19,9 @@ export default defineConfig(
   roblox.configs.recommended,
 
   {
+    plugins: {
+      '@stylistic': stylistic
+    },
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -31,6 +35,12 @@ export default defineConfig(
       }],
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
+
+      '@stylistic/padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: 'import', next: 'class' },
+        { blankLine: 'always', prev: 'block-like', next: 'class' }
+      ]
     }
   },
 
