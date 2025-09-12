@@ -1,6 +1,6 @@
 {
-  "name": "@rbxts/fecs",
-  "version": "1.0.0",
+  "name": "@rbxts/mono",
+  "version": "0.0.0",
   "description": "",
   "main": "out/init.lua",
   "scripts": {

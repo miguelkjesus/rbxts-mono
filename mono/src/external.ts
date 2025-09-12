@@ -2,7 +2,7 @@ export * from 'generated/components'
 
 export * from 'types'
 
-export * from 'component-service'
+export * from 'methods'
 export * from 'component'
 
-export * from 'hooks'
+export * from 'decorators'

@@ -8,7 +8,7 @@ export abstract class Component {
   )
   readonly Destroying = this.DestroyingEvent.Event
 
-  readonly DestroyTasks = new Cleaner()
+  protected readonly DestroyTasks = new Cleaner()
 
   constructor(instance: RBXObject) {
     this.Instance = instance
