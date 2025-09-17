@@ -1,23 +1,7 @@
 import { NonAbstractComponent } from 'component'
 import { ComponentAdded, RemoveComponent, TryAddComponent } from 'methods'
-import { MethodDecorator } from 'types'
 
 const CollectionService = game.GetService('CollectionService')
-
-export function On<Params extends unknown[]>(
-  signal: RBXScriptSignal<(...args: Params) => void>
-) {
-  type Fn = (...args: Params) => void
-
-  return function (
-    target: InferThis<Fn>,
-    _,
-    descriptor: TypedPropertyDescriptor<Fn>
-  ) {
-    signal.Connect((...args: Params) => descriptor.value(target, ...args))
-    return descriptor
-  } as MethodDecorator<(...args: Params) => void>
-}
 
 export function Tag(tag: string) {
   return function <T extends typeof NonAbstractComponent>(ComponentType: T) {

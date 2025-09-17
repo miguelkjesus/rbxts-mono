@@ -1,10 +1,10 @@
-import { KeyOfValue } from 'internal/types'
+import { KeyOfValue } from 'internal/type-utils'
 
 export type ClassNameOf<T> = KeyOfValue<Objects, T>
 
-export type MethodDecorator<Fn extends Callback> = (
+export type PropertyDecorator<Fn extends Callback> = (
   target: InferThis<Fn>,
-  methodName: string | symbol | number,
+  name: string | number,
   descriptor: TypedPropertyDescriptor<Fn>
 ) => TypedPropertyDescriptor<Fn>
 

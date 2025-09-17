@@ -18,9 +18,6 @@ export default defineConfig(
   roblox.configs.recommended,
 
   {
-    plugins: {
-      '@stylistic': stylistic
-    },
     languageOptions: {
       parserOptions: {
         projectService: true,
