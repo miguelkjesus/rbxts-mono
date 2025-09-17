@@ -1,44 +1,45 @@
 import { ComponentInstance, NonAbstractComponent } from 'component'
-
-const typeInstanceComponents = new Map<
-  typeof NonAbstractComponent,
-  Map<RBXObject, NonAbstractComponent>
->()
+import { getTypeInstanceComponents } from 'internal/shared'
 
 const ComponentAddedEvent: BindableEvent<
   (component: NonAbstractComponent) => void
 > = new Instance('BindableEvent')
 export const ComponentAdded = ComponentAddedEvent.Event
 
+const ComponentRemovingEvent: BindableEvent<
+  (component: NonAbstractComponent) => void
+> = new Instance('BindableEvent')
+export const ComponentRemoving = ComponentRemovingEvent.Event
+
 export function GetComponentTypes(): readonly (typeof NonAbstractComponent)[] {
-  return [...typeInstanceComponents].map(([ComponentType]) => ComponentType)
+  return [...getTypeInstanceComponents()].map(
+    ([ComponentType]) => ComponentType
+  )
 }
 
 export function RegisterType<T extends typeof NonAbstractComponent>(
   ComponentType: T
 ) {
-  typeInstanceComponents.set(ComponentType, new Map())
+  getTypeInstanceComponents().set(ComponentType, new Map())
   return ComponentType
 }
 
 function GenericGetInstanceComponents(
   ComponentType: typeof NonAbstractComponent
 ) {
-  const instanceComponents = typeInstanceComponents.get(ComponentType)
+  const instanceComponents = getTypeInstanceComponents().get(ComponentType)
   if (instanceComponents !== undefined) {
     return instanceComponents
   } else {
     RegisterType(ComponentType)
-    return typeInstanceComponents.get(ComponentType)!
+    return getTypeInstanceComponents().get(ComponentType)!
   }
 }
 
 export function GetInstanceComponents<T extends typeof NonAbstractComponent>(
   ComponentType: T
 ) {
-  return GenericGetInstanceComponents(
-    ComponentType
-  ) as unknown as ReadonlyMap<
+  return GenericGetInstanceComponents(ComponentType) as unknown as ReadonlyMap<
     ComponentInstance<InstanceType<T>>,
     InstanceType<T>
   >
@@ -88,7 +89,7 @@ export function AddComponent<T extends typeof NonAbstractComponent>(
 ) {
   const component = TryAddComponent(ComponentType, instance)
   if (!component) error('Failed to add component') // TODO better error
-  return instance
+  return component
 }
 
 export function GetComponent<T extends typeof NonAbstractComponent>(
@@ -107,6 +108,7 @@ export function RemoveComponent<T extends typeof NonAbstractComponent>(
   const component = GetComponent(ComponentType, instance)
   if (!component) return false
 
+  ComponentRemovingEvent.Fire(component)
   component.Destroy()
   GenericGetInstanceComponents(ComponentType).delete(instance)
   return true
