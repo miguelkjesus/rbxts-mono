@@ -1,13 +1,27 @@
 export class Throttler {
+  interval: number
   private lastReady = -1
 
-  Ready(interval: number) {
-    const now = os.clock()
+  constructor(interval = 0) {
+    this.interval = interval
+  }
 
-    if (now - this.lastReady < interval) return false
+  IsReady(interval = this.interval) {
+    return os.clock() - this.lastReady >= interval
+  }
 
-    this.lastReady = now
-    return true
+  ForceTick() {
+    this.lastReady = os.clock()
+    return true as const
+  }
+
+  TryTick(interval = this.interval) {
+    if (this.IsReady(interval)) {
+      this.lastReady = os.clock()
+      return true
+    }
+
+    return false
   }
 
   GetLastReady() {

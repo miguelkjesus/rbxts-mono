@@ -14,7 +14,7 @@ export function Throttle<This extends object>(
       value: (target, ...params) => {
         const interval = runGetter(intervalOrGetter, target)
 
-        if (!throttler.Ready(interval)) {
+        if (throttler.TryTick(interval)) {
           descriptor.value(target, ...params)
         }
       },
