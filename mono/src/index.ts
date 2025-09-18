@@ -1,7 +1,5 @@
-import * as External from './external'
+import * as Mono from './external'
 
-export const Mono = { ...External }
-export type Mono = typeof Mono
+export { Mono }
 export default Mono
-
 export * from './external'
