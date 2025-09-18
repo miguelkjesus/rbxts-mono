@@ -2,9 +2,11 @@ import { KeyOfValue } from 'internal/type-utils'
 
 export type ClassNameOf<T> = KeyOfValue<Objects, T>
 
+export type AnyKey = string | number | symbol | Services
+
 export type MethodDecorator<
   Fn extends Callback = Callback,
-  Name extends keyof InferThis<Fn> = keyof InferThis<Fn>,
+  Name extends AnyKey = AnyKey,
 > = (
   target: InferThis<Fn>,
   name: Name,
@@ -12,12 +14,14 @@ export type MethodDecorator<
 ) => TypedPropertyDescriptor<Fn>
 
 export type PropertyDecorator<
-  Target extends object = object,
-  Name extends keyof Target | undefined = undefined,
-> = <This extends Target>(
-  target: This,
-  name: Name extends undefined ? keyof This : Name
-) => void
+  Name extends AnyKey = AnyKey,
+  This extends object = object,
+> = (target: This, name: Name) => void
+
+export type TypedPropertyDecorator<
+  T = unknown,
+  This extends object = object,
+> = PropertyDecorator<ExtractKeys<This, T>, This>
 
 export type SignalParameters<T> =
   T extends RBXScriptSignal<infer Fn> ? Parameters<Fn> : never

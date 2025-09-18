@@ -1,8 +1,11 @@
 import { InstanceComponent } from 'generated/components'
-import { PropertyDecorator } from 'types'
+import { TypedPropertyDecorator } from 'type-utils'
 
-export function Attribute(attribute: string) {
-  const decorator: PropertyDecorator<InstanceComponent> = (target, name) => {
+export function Attribute<This extends InstanceComponent>(attribute: string) {
+  const decorator: TypedPropertyDecorator<AttributeValue, This> = (
+    target,
+    name
+  ) => {
     target.Starting.Once(() => {
       rawset(target, name, target.Instance.GetAttribute(attribute))
     })

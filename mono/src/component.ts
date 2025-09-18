@@ -1,4 +1,4 @@
-import { Cleaner } from 'cleaner'
+import { Cleaner } from 'utils/cleaner'
 
 export abstract class Component {
   readonly Instance: RBXObject

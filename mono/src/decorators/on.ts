@@ -1,5 +1,5 @@
 import { runGetter } from 'internal/decorator-utils'
-import { MethodDecorator } from 'types'
+import { MethodDecorator } from 'type-utils'
 
 export function On<This extends object, Params extends unknown[]>(
   signalOrGetter:

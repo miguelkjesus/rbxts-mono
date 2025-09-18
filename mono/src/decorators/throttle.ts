@@ -1,10 +1,11 @@
 import { runGetter } from 'internal/decorator-utils'
-import { MethodDecorator } from 'types'
+import { Throttler } from 'utils/throttler'
+import { MethodDecorator } from 'type-utils'
 
 export function Throttle<This extends object>(
   intervalOrGetter: number | ((self: This) => number)
 ) {
-  let lastTime = os.clock()
+  const throttler = new Throttler()
 
   const decorator: MethodDecorator<
     (this: This, ...params: unknown[]) => void
@@ -12,11 +13,10 @@ export function Throttle<This extends object>(
     return {
       value: (target, ...params) => {
         const interval = runGetter(intervalOrGetter, target)
-        const now = os.clock()
-        if (now - lastTime < interval) return
-        lastTime = now
 
-        descriptor.value(target, ...params)
+        if (!throttler.Ready(interval)) {
+          descriptor.value(target, ...params)
+        }
       },
     }
   }
