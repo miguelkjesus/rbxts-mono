@@ -1,4 +1,8 @@
-import { ComponentInstance, NonAbstractComponent } from 'component'
+import {
+  ComponentProps,
+  ComponentInstance,
+  NonAbstractComponent,
+} from 'component'
 import { getTypeInstanceComponents } from 'internal/shared'
 
 const ComponentAddedEvent: BindableEvent<
@@ -73,10 +77,20 @@ export function CanAddComponent<T extends typeof NonAbstractComponent>(
 
 export function TryAddComponent<T extends typeof NonAbstractComponent>(
   ComponentType: T,
-  instance: RBXObject
+  instance: RBXObject,
+  properties?: ComponentProps<InstanceType<T>>
 ) {
   if (CanAddComponent(ComponentType, instance)) {
     const component = new ComponentType(instance)
+
+    if (properties !== undefined) {
+      for (const [k, v] of pairs(properties)) {
+        ;(component as unknown as Record<string | number | symbol, unknown>)[
+          k as string | number | symbol
+        ] = v
+      }
+    }
+
     GenericGetInstanceComponents(ComponentType).set(instance, component)
     ComponentAddedEvent.Fire(component)
     return component as InstanceType<T>
@@ -85,9 +99,10 @@ export function TryAddComponent<T extends typeof NonAbstractComponent>(
 
 export function AddComponent<T extends typeof NonAbstractComponent>(
   ComponentType: T,
-  instance: ComponentInstance<InstanceType<T>>
+  instance: ComponentInstance<InstanceType<T>>,
+  properties?: ComponentProps<InstanceType<T>>
 ) {
-  const component = TryAddComponent(ComponentType, instance)
+  const component = TryAddComponent(ComponentType, instance, properties)
   if (!component) error('Failed to add component') // TODO better error
   return component
 }

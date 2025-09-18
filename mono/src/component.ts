@@ -46,3 +46,12 @@ export class NonAbstractComponent extends Component {
     )
   }
 }
+
+export type ComponentPropsKeys<T> = Extract<
+  WritablePropertyNames<T>,
+  string | number | symbol
+>
+
+export type ComponentProps<T> = {
+  [K in ComponentPropsKeys<T>]?: T[K]
+}
