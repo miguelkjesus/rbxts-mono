@@ -8,11 +8,17 @@ export abstract class Component {
   )
   readonly Destroying = this.DestroyingEvent.Event
 
+  private readonly StartingEvent: BindableEvent<() => void> = new Instance(
+    'BindableEvent'
+  )
+  readonly Starting = this.StartingEvent.Event
+
   protected readonly DestroyTasks = new Cleaner()
 
   constructor(instance: RBXObject) {
     this.Instance = instance
 
+    this.StartingEvent.Fire()
     this.OnStart?.()
 
     if (this.Instance.IsA('Instance')) {
@@ -27,8 +33,8 @@ export abstract class Component {
   }
 
   Destroy() {
-    this.OnDestroying?.()
     this.DestroyingEvent.Fire()
+    this.OnDestroying?.()
     this.DestroyTasks.CleanAll()
   }
 
