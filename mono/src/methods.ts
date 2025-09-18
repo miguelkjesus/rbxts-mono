@@ -85,9 +85,7 @@ export function TryAddComponent<T extends typeof NonAbstractComponent>(
 
     if (properties !== undefined) {
       for (const [k, v] of pairs(properties)) {
-        ;(component as unknown as Record<string | number | symbol, unknown>)[
-          k as string | number | symbol
-        ] = v
+        rawset(component, k, v)
       }
     }
 
