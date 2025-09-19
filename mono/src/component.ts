@@ -1,16 +1,13 @@
+import { event } from 'internal/event-utils'
 import { Cleaner } from 'utils/cleaner'
 
 export abstract class Component {
   readonly Instance: RBXObject
 
-  private readonly DestroyingEvent: BindableEvent<() => void> = new Instance(
-    'BindableEvent'
-  )
+  private readonly DestroyingEvent = event<[]>()
   readonly Destroying = this.DestroyingEvent.Event
 
-  private readonly StartingEvent: BindableEvent<() => void> = new Instance(
-    'BindableEvent'
-  )
+  private readonly StartingEvent = event<[]>()
   readonly Starting = this.StartingEvent.Event
 
   protected readonly DestroyTasks = new Cleaner()

@@ -3,16 +3,13 @@ import {
   ComponentInstance,
   NonAbstractComponent,
 } from 'component'
+import { event } from 'internal/event-utils'
 import { getTypeInstanceComponents } from 'internal/shared'
 
-const ComponentAddedEvent: BindableEvent<
-  (component: NonAbstractComponent) => void
-> = new Instance('BindableEvent')
+const ComponentAddedEvent = event<[component: NonAbstractComponent]>()
 export const ComponentAdded = ComponentAddedEvent.Event
 
-const ComponentRemovingEvent: BindableEvent<
-  (component: NonAbstractComponent) => void
-> = new Instance('BindableEvent')
+const ComponentRemovingEvent = event<[component: NonAbstractComponent]>()
 export const ComponentRemoving = ComponentRemovingEvent.Event
 
 export function GetComponentTypes(): readonly (typeof NonAbstractComponent)[] {
