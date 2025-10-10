@@ -31,14 +31,6 @@ export abstract class Component {
       this.DestroyTasks.Add(
         this.Instance.Destroying.Connect(() => this.Destroy())
       )
-
-      if ('OnChanged' in this) {
-        this.DestroyTasks.Add(
-          (this.Instance as Instance & ChangedSignal).Changed.Connect((name) =>
-            this.OnChanged?.(name as PropertyNames<RBXObject>)
-          )
-        )
-      }
     }
   }
 
@@ -68,11 +60,6 @@ export abstract class Component {
    * Fires whenever the component is destroyed.
    */
   protected OnDestroy?(): void
-
-  /**
-   * Fires immediately after a property of the object changes.
-   */
-  protected OnChanged?(changedPropertyName: PropertyNames<RBXObject>): void
 }
 
 export type ComponentInstance<T> = T extends Component ? T['Instance'] : never
