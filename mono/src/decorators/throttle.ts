@@ -3,6 +3,14 @@ import { Throttler } from 'utils/throttler'
 import { MethodDecorator } from 'type-utils'
 
 export function Throttle<This extends object>(
+  interval: number
+): MethodDecorator<(this: This, ...params: unknown[]) => void>
+
+export function Throttle<This extends object>(
+  getInterval: (self: This) => number
+): MethodDecorator<(this: This, ...params: unknown[]) => void>
+
+export function Throttle<This extends object>(
   intervalOrGetter: number | ((self: This) => number)
 ) {
   const throttler = new Throttler()

@@ -1,7 +1,16 @@
+import { Component } from 'component'
 import { runGetter } from 'internal/decorator-utils'
 import { MethodDecorator } from 'type-utils'
 
-export function On<This extends object, Params extends unknown[]>(
+export function On<This extends Component, Params extends unknown[]>(
+  signal: RBXScriptSignal<(...args: Params) => void>
+): MethodDecorator<(this: This, ...args: Params) => void>
+
+export function On<This extends Component, Params extends unknown[]>(
+  getSignal: (self: This) => RBXScriptSignal<(...args: Params) => void>
+): MethodDecorator<(this: This, ...args: Params) => void>
+
+export function On<This extends Component, Params extends unknown[]>(
   signalOrGetter:
     | RBXScriptSignal<(...args: Params) => void>
     | ((self: This) => RBXScriptSignal<(...args: Params) => void>)

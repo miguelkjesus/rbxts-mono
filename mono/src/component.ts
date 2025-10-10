@@ -1,27 +1,44 @@
 import { event } from 'internal/event-utils'
+import { PropertyNames } from 'type-utils'
 import { Cleaner } from 'utils/cleaner'
 
 export abstract class Component {
   readonly Instance: RBXObject
 
-  private readonly DestroyingEvent = event<[]>()
-  readonly Destroying = this.DestroyingEvent.Event
+  private readonly AwakingEvent = event<[]>()
+  readonly Awaking = this.AwakingEvent.Event
 
   private readonly StartingEvent = event<[]>()
   readonly Starting = this.StartingEvent.Event
+
+  private readonly DestroyingEvent = event<[]>()
+  readonly Destroying = this.DestroyingEvent.Event
 
   protected readonly DestroyTasks = new Cleaner()
 
   constructor(instance: RBXObject) {
     this.Instance = instance
 
-    this.StartingEvent.Fire()
-    this.OnStart?.()
+    this.AwakingEvent.Fire()
+    this.OnAwake?.()
+
+    task.defer(() => {
+      this.StartingEvent.Fire()
+      this.OnStart?.()
+    })
 
     if (this.Instance.IsA('Instance')) {
       this.DestroyTasks.Add(
         this.Instance.Destroying.Connect(() => this.Destroy())
       )
+
+      if ('OnChanged' in this) {
+        this.DestroyTasks.Add(
+          (this.Instance as Instance & ChangedSignal).Changed.Connect((name) =>
+            this.OnChanged?.(name as PropertyNames<RBXObject>)
+          )
+        )
+      }
     }
   }
 
@@ -31,12 +48,31 @@ export abstract class Component {
 
   Destroy() {
     this.DestroyingEvent.Fire()
-    this.OnDestroying?.()
+    this.OnDestroy?.()
     this.DestroyTasks.CleanAll()
   }
 
+  /**
+   * Fires before any other event methods are bound.
+   *
+   * Ideal place to perform any component initialisation.
+   */
+  protected OnAwake?(): void
+
+  /**
+   * Fires the frame after a component is created.
+   */
   protected OnStart?(): void
-  protected OnDestroying?(): void
+
+  /**
+   * Fires whenever the component is destroyed.
+   */
+  protected OnDestroy?(): void
+
+  /**
+   * Fires immediately after a property of the object changes.
+   */
+  protected OnChanged?(changedPropertyName: PropertyNames<RBXObject>): void
 }
 
 export type ComponentInstance<T> = T extends Component ? T['Instance'] : never
@@ -45,16 +81,11 @@ export class NonAbstractComponent extends Component {
   constructor(instance: RBXObject) {
     super(instance)
     error(
-      'Do not inherit from or create this class. Please use Component instead.'
+      'Do not inherit from or create NonAbstractComponent. Please use Component instead.'
     )
   }
 }
 
-export type ComponentPropsKeys<T> = Extract<
-  WritablePropertyNames<T>,
-  string | number | symbol
->
-
-export type ComponentProps<T> = {
-  [K in ComponentPropsKeys<T>]?: T[K]
-}
+export type ComponentProps<T> = T extends Component
+  ? Partial<WritableProperties<T>>
+  : never

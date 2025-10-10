@@ -27,3 +27,7 @@ export type SignalParameters<T> =
   T extends RBXScriptSignal<infer Fn> ? Parameters<Fn> : never
 
 export type SuggestString<T> = T extends string ? T | (string & {}) : string
+
+export type PropertyNames<T> = keyof (T extends RBXObject
+  ? Exclude<T, RBXScriptSignal | Callback | symbol>
+  : T)
