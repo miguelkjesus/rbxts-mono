@@ -21,7 +21,13 @@ export function On<This extends Component, Params extends unknown[]>(
     descriptor
   ) => {
     const signal = runGetter(signalOrGetter, target)
-    signal.Connect((...args: Params) => descriptor.value(target, ...args))
+
+    const connection = signal.Connect((...args: Params) =>
+      descriptor.value(target, ...args)
+    )
+
+    target.Destroying.Connect(() => connection.Disconnect())
+
     return descriptor
   }
 

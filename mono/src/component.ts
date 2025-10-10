@@ -1,5 +1,4 @@
 import { event } from 'internal/event-utils'
-import { PropertyNames } from 'type-utils'
 import { Cleaner } from 'utils/cleaner'
 
 export abstract class Component {
