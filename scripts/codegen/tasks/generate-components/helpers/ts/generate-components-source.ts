@@ -7,7 +7,7 @@ import createComponentClass from './create-component-class-declaration'
 
 async function generateComponentsSource({ Classes }: CodegenContext) {
   return await generateSource([
-    importDependencies(['SignalParameters'], 'types'),
+    importDependencies(['SignalParameters'], 'type-utils'),
     importDependencies(['Component'], 'component'),
     ...Classes.map(createComponentClass),
   ])

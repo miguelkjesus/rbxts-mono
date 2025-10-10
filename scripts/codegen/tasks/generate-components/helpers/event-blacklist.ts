@@ -1,8 +1,7 @@
 import { ApiClass, ApiEvent } from './api-dump'
 
 const EVENT_BLACKLIST = new Map([
-  ['Object', ['Changed']],
-  ['GuiButton', ['SecondaryActivated']],
+  ['Instance', ['Destroying']], // Destroy event is already defined and handled in component
 ])
 
 function isEventAllowed(Class: ApiClass, Event: ApiEvent) {
