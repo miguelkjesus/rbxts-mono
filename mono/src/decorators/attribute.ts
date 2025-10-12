@@ -6,7 +6,7 @@ export function Attribute<This extends InstanceComponent>(attribute: string) {
     target,
     name
   ) => {
-    target.Starting.Once(() => {
+    target.Awaking.Once(() => {
       rawset(target, name, target.Instance.GetAttribute(attribute))
     })
   }
