@@ -10,6 +10,16 @@
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,
 	"eslint.format.enable": true,
+	"eslint.useFlatConfig": true,
+	"eslint.workingDirectories": [
+		"."
+	],
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact"
+	],
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "always"
 	}

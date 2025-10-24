@@ -29,7 +29,6 @@ Called **"mono"** since it was initially inspired by MonoBehaviour in Unity
   - [x] Event methods
   - [x] Fully error-free
   - [ ] JSDocs
-  - [ ] Solve code versioning
 - [ ] Add utilities
   - [x] Cleaner
   - [x] Throttler
